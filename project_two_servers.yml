@@ -22,25 +22,25 @@ Resources:
             Action: sts:AssumeRole
       Path: "/"
 
-    Policies:
-      Type: AWS::IAM::Policy
-      Properties:
-        PolicyName: fullAccess
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action: "s3:*"
-              Resource: "*"
-        Roles:
-          - !Ref UdagramS3ReadOnlyEC2
-    
-    ProfileForApp:
-      Type: AWS::IAM::InstanceProfile
-      Properties:
-        Path: "/"
-        Roles:
-          - !Ref UdagramS3ReadOnlyEC2
+  IAMPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: fullAccess
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "s3:*"
+            Resource: "*"
+      Roles:
+        - !Ref UdagramS3ReadOnlyEC2
+
+  ProfileForApp:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref UdagramS3ReadOnlyEC2
 
   LBSecGroup:
     Type: AWS::EC2::SecurityGroup
@@ -108,16 +108,16 @@ Resources:
             DeleteOnTermination: true
 
   WebAppGroup:
-  Type: AWS::AutoScaling::AutoScalingGroup
-  Properties:
-    VPCZoneIdentifier:
-      - Fn::ImportValue: !Sub "${EnvironmentName}-PRIV-NETS"
-    LaunchConfigurationName:
-      Ref: WebAppLaunchConfig
-    MinSize: "3"
-    MaxSize: "5"
-    TargetGroupARNs:
-      - Ref: WebAppTargetGroup
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - Fn::ImportValue: !Sub "${EnvironmentName}-PRIV-NETS"
+      LaunchConfigurationName:
+        Ref: WebAppLaunchConfig
+      MinSize: "3"
+      MaxSize: "5"
+      TargetGroupARNs:
+        - Ref: WebAppTargetGroup
   WebAppLB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -162,7 +162,6 @@ Resources:
       VpcId:
         Fn::ImportValue:
           Fn::Sub: "${EnvironmentName}-VPCID"
-
 # Outputs:
 # This is also optional.
 # Bonus points for useful outputs!
