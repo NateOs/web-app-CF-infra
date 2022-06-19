@@ -87,17 +87,13 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           apt-get update -y
-          apt-get install unzip awscli -y
           apt-get install apache2 -y
           systemctl start apache2.service
-          sudo rm /var/www/html/index.html
-          sudo aws s3 cp s3://udagram-s3b/udacity.zip /var/www/html
-          sudo unzip /var/www/html/udacity.zip -d /var/www/html
-          systemctl restart apache2.service
+          cd /var/www/html
+          echo "it works! Udagram, Udacity" > index.html
       # ToDo: AMI ID of Ubuntu Linux machine. Too get one, try creating a VM from the web console.
       ImageId: ami-0df32f8302dfe67df
       # ToDo: Change the key-pair name, as applicable to you.
-      KeyName: udacloudform
       SecurityGroups:
         - Ref: WebServerSecGroup
       InstanceType: t3.small
